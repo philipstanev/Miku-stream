@@ -6,16 +6,35 @@ import (
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/philipstanev/Miku-stream/internal/middleware"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func (s *Service) AuthRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /login/", s.loginHandler)
 	mux.HandleFunc("POST /register/", s.registerHandler)
+	mux.HandleFunc("GET /secretMessage", s.secretMessage)
+}
+
+func (s *Service) secretMessage(w http.ResponseWriter, r *http.Request) {
+	err := middleware.CheckPermission(w, r, s.S)
+	if err != nil {
+		return
+	}
+
+	res := secretMessageResponse{Message: "Dyuzov"}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(res)
+}
+
+type secretMessageResponse struct {
+	Message string `json:"message"`
 }
 
 func (s *Service) registerHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+
 	var req registerRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {

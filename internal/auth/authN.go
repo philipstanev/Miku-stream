@@ -6,28 +6,14 @@ import (
 	"os"
 	"strconv"
 
-	"golang.org/x/crypto/bcrypt"
-
-	//"github.com/jackc/pgx/v5"
-	//"github.com/jackc/pgx/v5/pgtype"
-	//"github.com/jackc/pgx/v5/pgxpool"
 	authdb "github.com/philipstanev/Miku-stream/internal/auth/db"
+	"github.com/philipstanev/Miku-stream/internal/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
 	Q *authdb.Queries
-	S Session
-}
-
-type SessionInfo struct {
-	userID string
-	role   string
-}
-
-type Session interface {
-	GetInfo(sessionID string) (SessionInfo, error)
-	PutUser(info SessionInfo) (string, error)
-	RemoveUser(sessionID string) error
+	S sessions.Session
 }
 
 func (s *Service) Login(ctx context.Context, username string, password string) (string, error) {
@@ -40,19 +26,7 @@ func (s *Service) Login(ctx context.Context, username string, password string) (
 	if err != nil {
 		return "", err
 	}
-	return s.S.PutUser(SessionInfo{userID: user.ID.String(), role: user.Role})
-
-}
-
-// nil means passwords match
-func (s *Service) checkPassword(ctx context.Context, username string, password string) error {
-	user, err := s.Q.GetUserByUsername(ctx, username)
-	if err != nil {
-		return err
-	}
-	stored := user.PasswordHash
-	err = bcrypt.CompareHashAndPassword([]byte(stored), []byte(password))
-	return err
+	return s.S.PutUser(sessions.SessionInfo{UserID: user.ID.String(), Role: user.Role})
 
 }
 

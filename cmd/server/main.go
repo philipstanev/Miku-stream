@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/philipstanev/Miku-stream/internal/auth"
 	authdb "github.com/philipstanev/Miku-stream/internal/auth/db"
+	"github.com/philipstanev/Miku-stream/internal/sessions"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 	}
 	fmt.Println("starting program")
 	var authService auth.Service
-	authService.S = auth.NewInMemorySession()
+	authService.S = sessions.NewInMemorySession()
 	dbpool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
