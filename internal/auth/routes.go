@@ -13,7 +13,18 @@ import (
 func (s *Service) AuthRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /login/", s.loginHandler)
 	mux.HandleFunc("POST /register/", s.registerHandler)
-	mux.HandleFunc("GET /secretMessage", s.secretMessage)
+	mux.HandleFunc("GET /secretMessage/", s.secretMessage)
+	mux.HandleFunc("GET /proxyAuth", s.proxyAuthRequest)
+}
+
+func (s *Service) proxyAuthRequest(w http.ResponseWriter, r *http.Request) {
+	err := middleware.CheckPermission(w, r, s.S)
+	if err != nil {
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 }
 
 func (s *Service) secretMessage(w http.ResponseWriter, r *http.Request) {
