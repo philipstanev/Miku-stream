@@ -1,6 +1,14 @@
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
+# Extensionless files (e.g. Go binaries built on Linux): ignore everything
+# without a dot, then re-include directories and known extensionless files.
+*
+!*/
+!*.*
+!LICENSE
+!Dockerfile
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

@@ -90,6 +90,8 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "No such user", 404)
 			return
 		}
+		http.Error(w, "Couldn't log in", http.StatusInternalServerError)
+		return
 	}
 	res := loginResponse{SessionID: sessionID}
 	w.Header().Set("Content-Type", "application/json")
