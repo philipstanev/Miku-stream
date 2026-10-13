@@ -29,8 +29,10 @@ func ParseToStruct(fName string) (Episode, error) {
 
 func removeMetadata(fName string) []string {
 	splitStr := strings.Split(fName, " ")
-	//pattern := regexp.MustCompile(`^\[(.*)\]$`)
+
+	//This pattern matches any string with [ or ]. These strings contain unnecessary information like publisher or resolution
 	pattern := regexp.MustCompile(`\[|\]`)
+
 	splitStr[len(splitStr)-1] = strings.TrimSuffix(splitStr[len(splitStr)-1], ".mkv")
 	output := []string{}
 	for _, str := range splitStr {
@@ -42,7 +44,10 @@ func removeMetadata(fName string) []string {
 }
 
 func searchForSeasonEpisodeString(split []string) int {
+
+	//This pattern matches strings like S01E12 or 01x10 which show the season and episode number
 	pattern := regexp.MustCompile("^(S[0-9]+E[0-9]+|[0-9]+x[0-9]+)$")
+
 	for i, str := range split {
 		if pattern.MatchString(str) {
 			return i
