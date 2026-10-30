@@ -35,7 +35,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	authService.AuthRoutes(mux)
-	if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
+		if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 	fmt.Println("Started server")
