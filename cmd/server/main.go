@@ -12,6 +12,8 @@ import (
 	"github.com/philipstanev/Miku-stream/internal/auth"
 	authdb "github.com/philipstanev/Miku-stream/internal/auth/db"
 	"github.com/philipstanev/Miku-stream/internal/sessions"
+	showmetadatafetcher "github.com/philipstanev/Miku-stream/internal/showMetadataFetcher"
+	metadatadb "github.com/philipstanev/Miku-stream/internal/showMetadataFetcher/db"
 )
 
 func main() {
@@ -33,9 +35,15 @@ func main() {
 	defer dbpool.Close()
 	authService.Q = authdb.New(dbpool)
 
+	var metadataService showmetadatafetcher.Service
+	reqChan := make(chan showmetadatafetcher.Request)
+	metadataService.Q = metadatadb.New(dbpool)
+	metadataService.ReqChan = reqChan
+
 	mux := http.NewServeMux()
 	authService.AuthRoutes(mux)
-		if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
+	metadataService.MetadataFetcherRoutes(mux)
+	if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 	fmt.Println("Started server")
