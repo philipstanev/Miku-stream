@@ -108,12 +108,12 @@ func callAnilist(queryString string) (aniListResponse, error, rateAniListLimitin
 	req.Header.Set("Accept", "application/json")
 
 	client := &http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 1000 * time.Second,
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		panic(err)
+		return aniListResponse{}, err, rateLimit
 	}
 	defer resp.Body.Close()
 

@@ -39,6 +39,7 @@ func main() {
 	reqChan := make(chan showmetadatafetcher.Request)
 	metadataService.Q = metadatadb.New(dbpool)
 	metadataService.ReqChan = reqChan
+	go metadataService.Loop()
 
 	mux := http.NewServeMux()
 	authService.AuthRoutes(mux)

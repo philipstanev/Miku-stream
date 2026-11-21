@@ -43,20 +43,26 @@ func (s *Service) filterNewShowsQuery(ctx context.Context, all map[string]string
 }
 
 func (s *Service) callFetcher(queries map[string]string) []Response {
-	respChan := make(chan Response)
-	n := len(queries)
+	respChan := make(chan Response, len(queries))
 	resps := []Response{}
+	n := len(queries)
 	for query := range queries {
 		req := Request{query: query, sendTo: respChan, ttl: -1}
 		s.ReqChan <- req
 	}
 
-	for ; n >= 0; n-- {
-		resp := <-respChan
+	if n == 0 {
+		return []Response{}
+	}
+	for resp := range respChan {
 		if resp.err != nil {
 			continue
 		}
 		resps = append(resps, resp)
+		n--
+		if n == 0 {
+			break
+		}
 	}
 
 	return resps

@@ -26,7 +26,7 @@ func GetQueriesForDirectory(path string) (map[string]string, error) {
 			if e2.IsDir() {
 				allAreFiles = false
 				currPath := filepath.Join(entryPath, e2.Name())
-				currQuery := e.Name() + e2.Name()
+				currQuery := e.Name() + " " + e2.Name()
 				output[currQuery] = currPath
 			}
 		}

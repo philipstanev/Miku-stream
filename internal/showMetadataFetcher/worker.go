@@ -15,9 +15,14 @@ func (s *Service) Loop() {
 		body, err := callAnilistRatelimited(req.query)
 		resp.body = body
 		resp.err = err
-		resp.query = query
+		resp.query = req.query
 
-		req.sendTo <- resp
+		ST := req.sendTo
+
+		ST <- resp
+
+		a := 1 + 1
+		a += 1
 
 	}
 }
