@@ -17,12 +17,10 @@ func (s *Service) Loop() {
 		resp.err = err
 		resp.query = req.query
 
+		//Acronym for "Send to"
 		ST := req.sendTo
 
 		ST <- resp
-
-		a := 1 + 1
-		a += 1
 
 	}
 }

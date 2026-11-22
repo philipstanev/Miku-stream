@@ -23,7 +23,6 @@ func main() {
 			log.Printf("no .env file loaded: %v", err)
 		}
 	}
-	fmt.Println("starting program")
 	var authService auth.Service
 	authService.S = sessions.NewInMemorySession()
 	dbpool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
@@ -31,7 +30,6 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Unable to create connection pool: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("created pool")
 	defer dbpool.Close()
 	authService.Q = authdb.New(dbpool)
 
